@@ -10,12 +10,12 @@ day = str(d.day)
 hour = str(d.hour)
 min = str(d.minute)
 second =str(d.second)
-yzw = (month+" - "+ day + " - " + year)
+mdy= (month+" - "+ day + " - " + year)
 t = (hour+" : " + min + " : " + second)
 @app.get('/')
 def index():
   return {
-    "Current-Date ": yzw,
+    "Current-Date ": mdy,
     "Current-Time": t
 
   }
