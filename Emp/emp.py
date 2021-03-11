@@ -29,10 +29,22 @@ def show_emp(id,response:Response, db:Session=Depends(get_db)):
         return {"detail" :f"Employee with the id {id} is not available"}
     return emp
 @app.delete('/employee/{id}',status_code=status.HTTP_204_NO_CONTENT)
-def delete_emp(id,db:Session=Depends(get_db)):
-    emp = db.query(models.Employee).filter(models.Employee.id == id).delete(synchronize_session=False)
+def delete_emp(id,response:Response,db:Session=Depends(get_db)):
+    emps = db.query(models.Employee).filter(models.Employee.id == id)
+    if not emps.first():
+        response.status_code=status.HTTP_404_NOT_FOUND
+        return {"detail" :f"Employee with the id {id} is not available"}
+    emps.delete(synchronize_session=False)
     db.commit()
     return "deleted"
-# @app.put('/employee/{id}',status_code=status.HTTP_202_ACCEPTED)
-# def update_emp(id,emp:schemas.Employee,db:Session=Depends(get_db)):
+@app.put('/employee/{id}',status_code=status.HTTP_202_ACCEPTED)
+def update_emp(id,emp:schemas.Employee,response:Response,db:Session=Depends(get_db)):
+    emps = db.query(models.Employee).filter(models.Employee.id == id)
+    if not emps.first():
+        response.status_code=status.HTTP_404_NOT_FOUND
+        return {"detail" :f"Employee with the id {id} is not available"}
+    emps.update(emp)
+    db.commit()
+    return "Your record is updated "
+
 
